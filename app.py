@@ -1,6 +1,6 @@
 """Flask app for Cupcakes"""
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 # from flask_debugtoolbar import DebugToolbarExtension
 from models import DEFAULT_IMAGE, Cupcake, db, connect_db
 
@@ -14,6 +14,9 @@ app.config['SQLALCHEMY_ECHO'] = True
 
 connect_db(app)
 db.create_all()
+
+
+########################### API ROUTES #############################
 
 @app.get("/api/cupcakes")
 def list_all_cupcakes():
@@ -70,7 +73,7 @@ def update_cupcake(cupcake_id):
     cupcake.image = request.json.get("image", cupcake.image)
 
     db.session.commit()
-    breakpoint()
+
     serialized = cupcake.serialize()
 
     return jsonify(cupcake=serialized)
@@ -87,7 +90,17 @@ def delete_cupcake(cupcake_id):
     db.session.commit()
 
     return jsonify(deleted=cupcake_id)
-    # return {"deleted": cupcake_id}
+
+
+########################### FRONTEND ROUTES #############################
+
+@app.get("/")
+def show_homepage():
+    """Show homepage"""
+
+    return render_template("index.html")
+
+    
 
 
 

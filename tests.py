@@ -1,4 +1,7 @@
 from unittest import TestCase
+from warnings import resetwarnings
+
+from flask.typing import StatusCode
 
 from app import app
 from models import db, Cupcake
@@ -127,15 +130,15 @@ class CupcakeViewsTestCase(TestCase):
         """
         with app.test_client() as client:
             url = f"/api/cupcakes/{self.cupcake_id}"
-            # breakpoint()
+
             resp = client.patch(url, json=CUPCAKE_UPDATE_DATA)
-            # breakpoint()
+
             self.assertEqual(resp.status_code, 200)
 
-            data = resp.json
+
             copy_data = resp.json.copy()
             del copy_data['cupcake']['id']
-            breakpoint()
+
             self.assertEqual(copy_data, { "cupcake" : {
                 "flavor": "Banana",
                 "size": "TestSize",
@@ -149,7 +152,6 @@ class CupcakeViewsTestCase(TestCase):
 
             self.assertEqual(resp.status_code, 200)
 
-            data = resp.json
             copy_data = resp.json.copy()
             del copy_data['cupcake']['id']
 
@@ -159,3 +161,22 @@ class CupcakeViewsTestCase(TestCase):
                 "rating": 6,
                 "image": "http://test.com/cupcake2.jpg"}
             })
+
+    def test_delete_cupcake(self):
+        """Test deleting a cupcake"""
+
+        with app.test_client() as client:
+            url = f"/api/cupcakes/{self.cupcake_id}"
+            resp = client.delete(url)
+
+            self.assertEqual(resp.status_code, 200)
+
+    def test_delete_invalid_cupcake(self):
+        """Test taht you get a 404 back when you try to delete a cupcake
+        that doesn't exist"""
+
+        with app.test_client() as client:
+            url = "/api/cupcakes/0"
+            resp = client.delete(url)
+
+            self.assertEqual(resp.status_code, 404)
