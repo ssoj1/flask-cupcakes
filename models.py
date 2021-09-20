@@ -14,6 +14,8 @@ def connect_db(app):
     db.app = app
     db.init_app(app)
 
+DEFAULT_IMAGE = 'https://tinyurl.com/demo-cupcake'
+
 class Cupcake(db.Model):
     """Cupcake."""
 
@@ -34,7 +36,7 @@ class Cupcake(db.Model):
 
     image = db.Column(db.Text, 
                         nullable = False,
-                        default = 'https://tinyurl.com/demo-cupcake')
+                        default = DEFAULT_IMAGE)
 
     def serialize(self):
         """Serialize to dictionary"""
@@ -44,5 +46,10 @@ class Cupcake(db.Model):
             "flavor": self.flavor,
             "size": self.size, 
             "rating": self.rating,
-            "image": self.image
+            "image": self.image,
         }
+
+    # def image_url(self):
+    #     """Return an image, either the one provided or the default"""
+
+    #     return self.image or DEFAULT_IMAGE

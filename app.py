@@ -2,7 +2,7 @@
 
 from flask import Flask, jsonify, request
 # from flask_debugtoolbar import DebugToolbarExtension
-from models import Cupcake, db, connect_db
+from models import DEFAULT_IMAGE, Cupcake, db, connect_db
 
 app = Flask(__name__)
 
@@ -42,7 +42,7 @@ def create_cupcake():
     flavor = request.json["flavor"]
     size = request.json["size"]
     rating = request.json["rating"]
-    image = request.json["image"]
+    image = request.json["image"] or DEFAULT_IMAGE
 
     new_cupcake = Cupcake(
         flavor=flavor, 
@@ -56,5 +56,30 @@ def create_cupcake():
     serialized = new_cupcake.serialize()
 
     return (jsonify(cupcake=serialized),201)
+
+@app.patch("/api/cupcakes/<int:cupcake_id>")
+def update_cupcake(cupcake_id):
+    """Update a cupcake and return:
+    {cupcake: {id, flavor, size, rating, image}}
+    """
+    cupcake = Cupcake.query.get_or_404(cupcake_id)
+
+    cupcake.flavor = request.json.get("flavor") or cupcake.flavor
+    cupcake.size = request.json.get("size") or cupcake.size
+    cupcake.rating = request.json.get("rating") or cupcake.rating
+    cupcake.image = request.json.get("image") or cupcake.image
+
+    db.session.commit()
+
+    serialized = cupcake.serialize()
+
+    return jsonify(cupcake=serialized)
+
+
+
+
+
+
+
 
 
