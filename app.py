@@ -1,6 +1,6 @@
 """Flask app for Cupcakes"""
 
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, redirect
 # from flask_debugtoolbar import DebugToolbarExtension
 from models import DEFAULT_IMAGE, Cupcake, db, connect_db
 
@@ -101,7 +101,13 @@ def show_homepage():
     return render_template("index.html")
 
     
+# @app.post("/add")
+# def add_new_cupcake():
+#     """ Adds new cupcake to database """
+#     # url = 
+#     # cupcake = 
 
+#     return redirect ("/")
 
 
 
